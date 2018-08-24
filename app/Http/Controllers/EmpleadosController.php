@@ -116,6 +116,9 @@ class EmpleadosController extends Controller
      */
     public function destroy($idEmpleados)
     {
+        $existEncuestaEmple = DB::table('tb_Empleados')->where('IdEmpleado', $idEmpleados)->first();
+        $existUsuario = DB::table('tb_Empleados')->where('IdEmpleado', $idEmpleados)->first();
+
         $empleado = Empleados::find($idEmpleados);
         $empleado->delete();
 

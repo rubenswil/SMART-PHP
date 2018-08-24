@@ -67,16 +67,10 @@
 			                                    		<a href="#" class="button-table theme-button-one"><i class="fa fa-pencil" aria-hidden="true"></i></a>
 													</div>
 													<div class="col-xl-6 col-lg-6 col-6">
-			                                    		{{-- <a href="{{route('auditoria.edit', $audioria->IdAuditoria) }}" class="button-table theme-button-one"><i class="fa fa-minus-circle" aria-hidden="true"></i></a> --}}
 
-			                                    		{!! Form::open(['route' => ['empresas.destroy', $empresa->IdEmpresa], 'method' => 'DELETE']) !!}
-
-															<a href="javascript:;" onclick="parentNode.submit();" class="button-table theme-button-one"><i class="fa fa-minus-circle" aria-hidden="true"></i></a>
-
-														{!! Form::close() !!}
-
-														{!! Form::open(['method' => 'DELETE','route' => ['picks.destroy', $poll->iduser_poll],'style'=>'display:inline', 'onsubmit' => 'return confirmDelete()']) !!}
-                                                            {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
+														{!! Form::open(['method' => 'DELETE','route' => ['empresas.destroy', $empresa->IdEmpresa],'style'=>'display:inline', 'onsubmit' => 'return confirmDelete()']) !!}
+                                                            <button type="submit" class="button-table theme-button-one">
+                                                            <i class="fa fa-minus-circle" aria-hidden="true"></i></button>
                                                         {!! Form::close() !!}
 													</div>
 												</div>

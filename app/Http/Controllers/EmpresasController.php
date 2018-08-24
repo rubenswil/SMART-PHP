@@ -9,6 +9,8 @@ use App\Sector;
 use App\UserEmpresa;
 use App\Empleados;
 
+use DB;
+
 class EmpresasController extends Controller
 {
     /**
@@ -136,16 +138,27 @@ class EmpresasController extends Controller
      */
     public function destroy($idEmpresa)
     {
-        // $userEmpresa = UserEmpresa::getByIds($idEmpresa, 1);
-        // $userEmpresa[0]->delete();
+        $existEmpleados = DB::table('tb_Empleados')->where('IdEmpresa', $idEmpresa)->first();
+        $existsEncuestas = DB::table('tb_EncuestasEmpresa')->where('IdEmpresa', $idEmpresa)->first();
 
-        $empresas = Empresa::find($idEmpresa);
-        $empresas->delete();
+        // dd($exists);
+        if(!$existEmpleados && !$existsEncuestas){
+            // USING MODELS
+            $empresas = Empresa::find($idEmpresa);
+            $empresas->delete();
 
-        $notification = array(
-              'message' => 'Datos eliminados correctamente',
-              'alert-type' => 'success'
-        );
+            $notification = array(
+                  'message' => 'Datos eliminados correctamente',
+                  'alert-type' => 'success'
+            );
+        }
+        else
+        {
+            $notification = array(
+            'message' => 'No se puede eliminar esta Empresa ya que tiene datos asociados en Encuestas o Empleados.', 
+            'alert-type' => 'warning'
+          );
+        }
 
         return redirect()->route('empresas.index')->with($notification);
     }
