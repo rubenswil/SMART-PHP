@@ -96,5 +96,18 @@
 				    	"scrollX": true
 				    });
 				} );
+
+				function confirmDelete() {
+					var result = confirm('Esta deguro de eliminar el registro?');
+
+					if (result)
+					{
+						return true;
+					}
+					else
+					{	
+						return false;
+					}
+				}
 			</script>
 @endsection
