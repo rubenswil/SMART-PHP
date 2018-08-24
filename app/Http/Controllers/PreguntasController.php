@@ -11,6 +11,7 @@ use App\Sector;
 use App\UserEmpresa;
 use App\ViewPreguntas;
 use App\ViewRespuestas;
+use App\ViewPonderadoCategoria;
 use App\Respuestas;
 use App\Preguntas;
 use App\EncuestasEmpresa;
@@ -50,26 +51,99 @@ class PreguntasController extends Controller
     {
 
         try {
+            $idEncuestaEmpresa = $request->input('IdEncuestaEmpresa');
+            $idCategoria = $request->input('IdCategoria');
+            $idEmpresa = $request->input('IdEmpresa');
+            $idEncuesta = $request->input('IdEncuesta');
 
-            // Obtiene la empresa encuestada
-            $empresa = $request->input('idEmpresa');
-            $categoti =  $request->input('idCategoria');
-
-            $preguntas = ViewPreguntas::GetByCategory($categoti);
+            $preguntas = ViewPreguntas::GetByCategoryByEncuesta($idCategoria, $idEncuesta);
 
             foreach ($preguntas as $pregunta) {
-                $respuesta = new Respuestas();
+                
+                $pregunta->respuestas = RespuestasPregunta::GetByIdPregunta($pregunta->IdPregunta);
 
-                $respuesta->IdEmpresa = $empresa;
-                $respuesta->IdCategoria = $categoti;
-                $respuesta->IdPregunta = $pregunta->IdPregunta;
+                foreach ($pregunta->respuestas as $respuesta) {
 
-                $result = Input::get('optradio_'.$pregunta->IdPregunta)== 'true' ? 1 : 0;    
-                $respuesta->Respuesta = $request->input('idCategoria');
-                $respuesta->Respuesta = $request->input('idCategoria');
-                $respuesta->Calificacion = $pregunta->Calificacion;
+                    // $respuesta->items = ItemRespuestaPregunta::GetByIdRespuesta($respuesta->IdRespuestaPregunta);
 
-                $respuesta->save();
+                    if($respuesta->IdTipoRespuesta == 1){
+                        $selec = Input::get('select_'.$respuesta->IdRespuestaPregunta);
+                        $item = ItemRespuestaPregunta::find($selec);
+                        $result = $item->Item;
+                        $score =  $item->Calificacion;
+
+                        $respuesta = new Respuestas();
+
+                        $respuesta->IdEmpresa = $idEmpresa;
+                        $respuesta->IdEncuestaEmpresa = $idEncuestaEmpresa;
+                        $respuesta->IdCategoria = $idCategoria;
+                        $respuesta->IdRespuestaPregunta = $respuesta->IdRespuestaPregunta;
+                        $respuesta->Respuesta = $result;
+                        $respuesta->Calificacion = $score;
+                        $respuesta->Observaciones = '';
+                        
+                        $respuesta->save();
+                    }
+
+                    if($respuesta->IdTipoRespuesta == 2){
+                        $respuesta->items = ItemRespuestaPregunta::GetByIdRespuesta($respuesta->IdRespuestaPregunta);
+                        foreach ($respuesta->items as $item) {
+                            $selec = Input::get('optradio_'.$item->IdItem);
+                            $item = ItemRespuestaPregunta::find($selec);
+                            $result = $item->Item;
+                            $score =  $item->Calificacion;
+
+                            $respuesta = new Respuestas();
+
+                            $respuesta->IdEmpresa = $idEmpresa;
+                            $respuesta->IdEncuestaEmpresa = $idEncuestaEmpresa;
+                            $respuesta->IdCategoria = $idCategoria;
+                            $respuesta->IdRespuestaPregunta = $respuesta->IdRespuestaPregunta;
+                            $respuesta->Respuesta = $result;
+                            $respuesta->Calificacion = $score;
+                            $respuesta->Observaciones = '';
+                            
+                            $respuesta->save();
+                        }
+                    }
+
+                    if($respuesta->IdTipoRespuesta == 3){
+                        $selec = Input::get('optradio_'.$respuesta->IdRespuestaPregunta);
+                        $item = ItemRespuestaPregunta::find($selec);
+                        $result = $item->Item;
+                        $score =  $item->Calificacion;
+
+                        $respuesta = new Respuestas();
+
+                        $respuesta->IdEmpresa = $idEmpresa;
+                        $respuesta->IdEncuestaEmpresa = $idEncuestaEmpresa;
+                        $respuesta->IdCategoria = $idCategoria;
+                        $respuesta->IdRespuestaPregunta = $respuesta->IdRespuestaPregunta;
+                        $respuesta->Respuesta = $result;
+                        $respuesta->Calificacion = $score;
+                        $respuesta->Observaciones = '';
+                        
+                        $respuesta->save();
+                    }
+
+                    if($respuesta->IdTipoRespuesta == 4){
+                        $result = Input::get('opttext_'.$respuesta->IdRespuestaPregunta);
+                        $score = 0;
+
+                        $respuesta = new Respuestas();
+
+                        $respuesta->IdEmpresa = $idEmpresa;
+                        $respuesta->IdEncuestaEmpresa = $idEncuestaEmpresa;
+                        $respuesta->IdCategoria = $idCategoria;
+                        $respuesta->IdRespuestaPregunta = $respuesta->IdRespuestaPregunta;
+                        $respuesta->Respuesta = $result;
+                        $respuesta->Calificacion = $score;
+                        $respuesta->Observaciones = '';
+                        
+                        $respuesta->save();
+                    }
+
+                }
             }
 
             $notification = array(
@@ -84,7 +158,7 @@ class PreguntasController extends Controller
         }
 
 
-        return redirect()->route('preguntas.show',$empresa)->with($notification);
+        return redirect()->route('preguntas.show',$idEncuestaEmpresa)->with($notification);
         // $respuestas = new Respuestas();$preguntas = ViewPreguntas::GetByCategory(1);
 
 
@@ -111,10 +185,10 @@ class PreguntasController extends Controller
         $empresas = Empresa::getById($encuestasEmpresa->IdEmpresa);
 
         // Cuenta la cantidad de preguntas respondidads
-        $count = Respuestas::countCategoryByEncuesta($encuesta->IdEncuesta);
+        $count = Respuestas::countCategoryByEncuestaEmpresa($idEncuestaEmpresa);
 
         // Maxima Categoria
-        $maxCategoria = Preguntas::getLastCategoria($encuesta->IdEncuesta);
+        $maxCategoria = Preguntas::getLastCategoria($encuestasEmpresa->IdEncuesta);
 
         //Si es 0 es porque no ha constestado nada, si no obtiene la ultima categoria de preguntas muestra a siguiente
         if ($count == 0)
@@ -137,7 +211,7 @@ class PreguntasController extends Controller
         }
         else
         {
-            $respuesta = Respuestas::getByEmpresaForCategory($encuestasEmpresa->$idEmpresa);
+            $respuesta = Respuestas::getByEncuestaEmpresaForCategory($idEncuestaEmpresa);
 
 
             if ($maxCategoria != $respuesta[$count-1]->IdCategoria)
@@ -145,7 +219,11 @@ class PreguntasController extends Controller
                 $preguntas = ViewPreguntas::GetByCategoryByEncuesta($respuesta[$count-1]->IdCategoria + 1, $encuesta->IdEncuesta);
 
                 foreach ($preguntas as $pregunta) {
-                    $pregunta->respuestas = ViewRespuestas::GetByIdPregunta($pregunta->IdPregunta);
+                    // $pregunta->respuestas = ViewRespuestas::GetByIdPregunta($pregunta->IdPregunta);
+                    $pregunta->respuestas = RespuestasPregunta::GetByIdPregunta($pregunta->IdPregunta);
+                    foreach ($pregunta->respuestas as $respuesta) {
+                        $respuesta->items = ItemRespuestaPregunta::GetByIdRespuesta($respuesta->IdRespuestaPregunta);
+                    }
                 }
 
                 return view ('preguntas.preguntas')
@@ -155,10 +233,17 @@ class PreguntasController extends Controller
             }
             else
             {
-                $puntaje = Respuestas::calificacion($empresas[0]->IdEmpresa);
+                $puntaje = number_format(Respuestas::calificacion($idEncuestaEmpresa), 2, '.', ',');
+                $categorias = ViewPonderadoCategoria::GetCategoriesByEncuestaEmpresa($idEncuestaEmpresa);
+                // $respuesta = Respuestas::getByEncuestaEmpresaForCategory($idEncuestaEmpresa);
+
+                /*AL FINALIZA PONER UN ESTADO EN LA TABLA DE ENCUETAS-EMPRESAS Y AL FINALIZAR CAMBIAR ESTADO*/
+
                 return view ('preguntas.puntaje')
                     ->with('empresas', $empresas)
-                    ->with('puntaje', $puntaje);
+                    ->with('puntaje', $puntaje)
+                    ->with('categorias', $categorias)
+                    ->with('encuesta', $encuesta);
             }
         }
     }

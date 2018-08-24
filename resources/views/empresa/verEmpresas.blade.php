@@ -34,7 +34,7 @@
 		                                    <th style="text-align: center;">TipoRiesgo</th>
 		                                    <th style="text-align: center;">Encuestar</th>
 		                                    <th style="text-align: center;">Empleados</th>
-		                                    <th style="text-align: center;">Editar / Eliminar</th>
+		                                    <th style="text-align: center; width: 100px;">Editar / Eliminar</th>
 		                                </tr>
 		                            </thead>
 		                            <tbody>
@@ -92,7 +92,9 @@
 			<script src="{{ asset('vendor/jquery.2.2.3.min.js') }}"></script>
 			<script>
 				$(document).ready( function () {
-				    $('#empresas').DataTable();
+				    $('#empresas').DataTable({
+				    	"scrollX": true
+				    });
 				} );
 			</script>
 @endsection

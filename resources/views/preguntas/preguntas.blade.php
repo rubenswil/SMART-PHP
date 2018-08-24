@@ -39,6 +39,11 @@
 								<div class="row">
 									<div class="col-xl-6 col-lg-6 col-6">
 										<label for="">{{$pregunta->Pregunta}}</label>
+										@if($pregunta->urlVideo != null)
+										<button type="button" class="btn btn-primary" onclick="window.open('{{$pregunta->urlVideo}}', '_blank');">
+										  Ayuda
+										</button>
+										@endif
 									</div>
 									
 
@@ -49,7 +54,7 @@
 											@if($respuesta->IdTipoRespuesta == 1)
 											    <div class="form-check">
 												  
-												    <select name="select_{{$respuesta->Item}}">
+												    <select name="select_{{$respuesta->IdRespuestaPregunta}}" required>
 												    	@foreach($respuesta->items as $item)
 												    	<option value="{{$item->IdItem}}">{{$item->Item}}</option>
 												    	@endforeach
@@ -61,35 +66,48 @@
 												@foreach($respuesta->items as $item)
 											    <div class="form-check">
 												  <label class="form-check-label">
-												    <input type="checkbox" class="form-check-input" name="optcheckbox_{{$item->IdRespuestaPregunta}}" value="true">{{$item->Item}}
+												    <input type="checkbox" class="form-check-input" name="optcheckbox_{{$item->IdItem}}" value="{{$item->IdItem}}">{{$item->Item}}
 												  </label>
 												</div>
 												@endforeach
 											@endif
 											@if($respuesta->IdTipoRespuesta == 3)
 												@foreach($respuesta->items as $item)
-											    <div class="form-check">
-												  <label class="form-check-label">
-												    <input type="radio" class="form-check-input" name="optradio_{{$item->IdRespuestaPregunta}}" value="true">{{$item->Item}}
-												  </label>
-												</div>
+													<div class="row">
+														<div class="col-xl-12 col-lg-12 col-12">
+														    <div class="form-check">
+															  <label class="form-check-label">
+															    <input type="radio" class="form-check-input" name="optradio_{{$item->IdRespuestaPregunta}}" value="{{$item->IdItem}}" required>{{$item->Item}}
+															  </label>
+															</div>
+														</div>
+													</div>
 												@endforeach
+												<div class="row">
+													<div class="col-xl-10 col-lg-10 col-12">
+														<div class="form-group">
+														  <input type="text" class="form-control encuesta" id="usr" placeholder="Observaciones">
+														</div>
+													</div>
+												</div>
 											@endif
 											@if($respuesta->IdTipoRespuesta == 4)
-										    <div class="form-check">
-											  <label class="form-check-label">
-											    <input type="text" class="form-check-input" name="opttext_{{$respuesta->IdPregunta}}">
-											  </label>
-											</div>
+											    <div class="form-check">
+												  <label class="form-check-label">
+												    <input type="text" class="form-check-input" name="opttext_{{$respuesta->IdRespuestaPregunta}}" required="">
+												  </label>
+												</div>
 											@endif
 											
 										@endforeach
 									</div>
-									
+
 								</div>
 								@endforeach
-								<input type="hidden" id="idEmpresa" name="idEmpresa" value="{{$empresas[0]->IdEmpresa}}">
-								<input type="hidden" id="idCategoria" name="idCategoria" value="{{$preguntas[0]->IdCategoria}}">
+								<input type="hidden" id="IdCategoria" name="IdCategoria" value="{{$pregunta->IdCategoria}}">
+								<input type="hidden" id="IdEncuestaEmpresa" name="IdEncuestaEmpresa" value="{{$encuestasEmpresa->IdEncuestaEmpresa}}">
+								<input type="hidden" id="IdEmpresa" name="IdEmpresa" value="{{$encuestasEmpresa->IdEmpresa}}">
+								<input type="hidden" id="IdEncuesta" name="IdEncuesta" value="{{$encuestasEmpresa->IdEncuesta}}">
 								<br>
 								<br>
 								{{-- Botone --}}
@@ -117,5 +135,5 @@
 		</div> <!-- /.container -->
 
 		
-	</div> <!-- /.contact-us-section -->			
+	</div> <!-- /.contact-us-section -->
 @endsection

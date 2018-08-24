@@ -25,8 +25,27 @@
 								<div class="row">
 									
 								</div>
-								
 								<hr>
+								<div class="row">
+									<table class="table table-bordered">
+									    <thead>
+									      <tr>
+									      	<th>{{$encuesta->MetaFase}}</th>
+									        <th>{{$encuesta->MetaCategoria}}</th>
+									        <th>{{$encuesta->MetaPonderado}}</th>
+									      </tr>
+									    </thead>
+									    <tbody>
+									    	@foreach($categorias as $categoria)
+									      	<tr>
+									      		<td></td>
+									        	<td>{{$categoria->Categoria}}</td>
+									        	<td>{{$categoria->Ponderado}}</td>
+									      	</tr>
+									      	@endforeach
+									    </tbody>
+									  </table>
+								</div>							
 								<div class="row">
 									<div class="col-xl-4 col-lg-4 col-12">
 									</div>
@@ -45,6 +64,7 @@
 									</div>
 									<div class="col-sm-4 col-lg-4 col-12">
 										<button class="theme-button-one btn-block" onclick="window.location='{{ route("empresas.index") }}'">Aceptar</button>
+										{{-- ESTE ACEPTAR DEBE IR AL PLAN --}}
 										
 									</div>
 									<div class="col-xl-4 col-lg-4 col-12">

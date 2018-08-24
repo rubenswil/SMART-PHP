@@ -14,20 +14,19 @@ class Respuestas extends Model
     	return "IdRespuesta";
 	}
 
-	public static function countCategoryByEncuesta($idEncuesta)
+	public static function countCategoryByEncuestaEmpresa($idEncuestaEmpresa)
 	{
-		return Respuestas::where('IdEncuesta','=',$idEncuesta)->get()->count();
+		return Respuestas::where('IdEncuestaEmpresa','=',$idEncuestaEmpresa)->get()->count();
 	}
 
-	public static function getByEmpresaForCategory($idEmpresa)
+	public static function getByEncuestaEmpresaForCategory($idEncuestaEmpresa)
 	{
-		return Respuestas::where('IdEmpresa','=',$idEmpresa)->get();
+		return Respuestas::where('IdEncuestaEmpresa','=',$idEncuestaEmpresa)->get();
 	}
 
-	public static function calificacion($idEmpresa)
+	public static function calificacion($idEncuestaEmpresa)
 	{
-		return Respuestas::where('IdEmpresa','=',$idEmpresa)
-						   ->where('Respuesta','<>', 0)
+		return Respuestas::where('IdEncuestaEmpresa','=',$idEncuestaEmpresa)
 						   ->sum('Calificacion');
 	}
 }

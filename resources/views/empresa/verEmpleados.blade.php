@@ -69,7 +69,7 @@
 			<script src="{{ asset('vendor/jquery.2.2.3.min.js') }}"></script>
 			<script>
 				$(document).ready( function () {
-				    $('#empresas').DataTable();
+				    $('#empresas').DataTable({});
 				} );
 			</script>
 @endsection
