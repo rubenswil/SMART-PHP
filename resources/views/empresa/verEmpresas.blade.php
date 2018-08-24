@@ -74,6 +74,10 @@
 															<a href="javascript:;" onclick="parentNode.submit();" class="button-table theme-button-one"><i class="fa fa-minus-circle" aria-hidden="true"></i></a>
 
 														{!! Form::close() !!}
+
+														{!! Form::open(['method' => 'DELETE','route' => ['picks.destroy', $poll->iduser_poll],'style'=>'display:inline', 'onsubmit' => 'return confirmDelete()']) !!}
+                                                            {!! Form::submit('Borrar', ['class' => 'btn btn-danger']) !!}
+                                                        {!! Form::close() !!}
 													</div>
 												</div>
 		                                    </td>
